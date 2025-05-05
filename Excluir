@@ -1,0 +1,48 @@
+@model Trabalho_BD.Models.Tarefas
+<h2>Tarefas</h2>
+<h3 class="badge bg-secondary">Cadastro de Tarefas - Excluir</h3>
+
+@using (Html.BeginForm("Excluir", "Tarefas", FormMethod.Post, new { Id = "formTarefasExcluir", name = "formTarefasExcluir" }))
+{
+	<div class="row col-md-offset-3 mt-2">
+		@Html.LabelFor(Model => Model.Id, new { @class = "col-sm-2 col-form-label text-right" })
+		<div class="col-sm-4">
+			@Html.TextBoxFor(Model => Model.Id, new {@class = "form-control", @readonly = "true" })
+		</div>
+	</div>
+	<div class="row col-md-offset-3 mt-2">
+		@Html.LabelFor(Model => Model.Descricao, new { @class = "col-sm-2 col-form-label text-right" })
+		<div class="col-sm-4">
+			@Html.TextBoxFor(Model => Model.Descricao, new { @maxlength = "70", @class = "form-control" })
+		</div>
+	</div>
+	<div class="row col-md-offset-3 mt-2">
+		@Html.LabelFor(Model => Model.Responsavel, new { @class = "col-sm-2 col-form-label text-right"})
+		<div class="col-sm-4">
+			@Html.TextBoxFor(Model => Model.Responsavel, new { @maxlength = "70", @class = "form-control" })
+		</div>
+	</div>
+	<div class="row col-md-offset-3 mt-2">
+		@Html.LabelFor(Model => Model.Status, new { @class = "col-sm-2 col-form-label text-right" })
+		<div class="col-sm-4">
+			@Html.TextBoxFor(Model => Model.Status, new { @maxlength = "70", @class = "form-control" })
+		</div>
+	</div>
+	<div class="row col-md-offset-3 mt-2">
+		@Html.LabelFor(Model => Model.Prioridade, new { @class = "col-sm-2 col-form-label text-right" })
+		<div class="col-sm-4">
+			@Html.TextBoxFor(Model => Model.Prioridade, new { @maxlength = "70", @class = "form-control" })
+		</div>
+	</div>
+	<div class="row col-md-offset-3 mt-2">
+		@Html.LabelFor(Model => Model.DataVencimento, new { @class = "col-sm-2 col-form-label text-right" })
+		<div class="col-sm-4">
+			@Html.TextBoxFor(Model => Model.DataVencimento, new { @maxlength = "70", @class = "form-control" })
+		</div>
+	</div>
+
+	<br />
+	<div class="accordion-button mt-2">
+		<button type="submit" class="btn btn-danger">Excluir</button>
+	</div>
+}
