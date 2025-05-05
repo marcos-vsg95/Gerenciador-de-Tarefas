@@ -1,0 +1,85 @@
+using Microsoft.AspNetCore.Mvc;
+using Trabalho_BD.Models;
+
+namespace Trabalho_BD.Controllers
+{
+	public class TarefasController : Controller
+	{
+		public Tarefas _tarefas = new Tarefas();
+		public IActionResult Index()
+		{
+			ViewBag.Texto = "";
+			var tarefasList = _tarefas.ObterTarefas();
+			return View(tarefasList);
+		}
+
+		public IActionResult ObterTarefas(string texto)
+		{
+			ViewBag.Texto = texto;
+			var tarefasList = _tarefas.ObterTarefas(texto);
+			return View("Views/Tarefas/Index.cshtml",tarefasList);
+		}
+
+		public IActionResult MostrarInserir()
+		{
+			return View("Views/Tarefas/Adicionar.cshtml");
+		}
+
+		public IActionResult Inserir(Tarefas tarefas)
+		{
+			var result = _tarefas.Inserir(tarefas);
+			return RedirectToAction("Index", "Tarefas");
+		}
+
+		public IActionResult MostrarAtualizar(string id)
+		{
+			var tarefa = _tarefas.ObterTarefa(id);
+			return View("Views/Tarefas/Alterar.cshtml",tarefa);
+		}
+
+		public IActionResult Atualizar(Tarefas tarefas)
+		{
+			var result = _tarefas.Atualizar(tarefas);
+			return RedirectToAction("Index", "Tarefas");
+		}
+
+		public IActionResult Visualizar(string id)
+		{
+			var tarefa = _tarefas.ObterTarefa(id);
+			return View(tarefa);
+		}
+
+		public IActionResult MostrarExcluir(string id)
+		{
+			var tarefa = _tarefas.ObterTarefa(id);
+			return View("Views/Tarefas/Excluir.cshtml",tarefa);
+		}
+
+		public IActionResult Excluir(Tarefas tarefa)
+		{
+			var result = _tarefas.Excluir(tarefa);
+			return RedirectToAction("Index", "Tarefas");
+		}
+
+
+
+
+		public IActionResult RelatorioConcluidas()
+		{
+			var relatorio = _tarefas.TarefasConcluidasPorUsuario();
+			return View("Views/Tarefas/RelatorioConcluidas.cshtml", relatorio);
+		}
+
+		public IActionResult RelatorioPercentual()
+		{
+			var relatorio = _tarefas.PercentualConclusaoPorUsuario();
+			return View("Views/Tarefas/RelatorioPercentual.cshtml", relatorio);
+		}
+
+		public IActionResult RelatorioPendentes()
+		{
+			var relatorio = _tarefas.TarefasPendentesPorPrioridade();
+			return View("Views/Tarefas/RelatorioPendentes.cshtml", relatorio);
+		}
+	}
+}
