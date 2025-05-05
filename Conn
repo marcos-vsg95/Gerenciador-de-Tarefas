@@ -1,0 +1,19 @@
+using MongoDB.Driver;
+using Trabalho_BD.Models;
+
+namespace Trabalho_BD.Context
+{
+    public class Conn
+    {
+        public static readonly string Server = "mongodb://localhost:72021";
+        public static readonly string Db = "Gerenciador";
+        public static readonly string ColletionTarefas = "Tarefas";
+
+        public static IMongoCollection<Tarefas> AbrirColecaoTarefas()
+        {
+            var cli = new MongoClient(Server);
+            var db = cli.GetDatabase(Db);
+            return db.GetCollection<Tarefas>(ColletionTarefas);
+        }
+    }
+}
