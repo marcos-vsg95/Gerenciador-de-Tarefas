@@ -1,0 +1,53 @@
+@model List<Trabalho_BD.Models.Tarefas>
+<h2>Tarefas</h2>
+<h3 class="badge bg-secondary">Cadastro de Tarefas - Buscar</h3>
+
+<div class="mb-3">
+	<a class="btn btn-primary me-2" href="/Tarefas/MostrarInserir"><i class="bi-journal-plus"></i> Adicionar</a>
+	<a class="btn btn-secondary me-2" href="/Tarefas/RelatorioConcluidas"><i class="bi-check2-circle"></i> Concluídas por Usuário</a>
+	<a class="btn btn-success me-2" href="/Tarefas/RelatorioPercentual"><i class="bi-bar-chart-fill"></i> Percentual de Conclusão</a>
+	<a class="btn btn-warning text-white" href="/Tarefas/RelatorioPendentes"><i class="bi-exclamation-circle"></i> Pendentes por Prioridade</a>
+</div>
+
+@using (Html.BeginForm("ObterTarefas", "Tarefas", FormMethod.Post, new { id = "formTarefasBuscar", name = "formTarefasBuscar" }))
+{
+	<div class="row col-md-offset-3 mb-3">
+		<div class="col-sm-2 text-end mt-1">
+			<label for="nome">Responsável</label>
+		</div>
+		<div class="col-sm-4">
+			<input type="text" id="texto" name="texto" class="form-control" value="@ViewBag.Texto" maxlength="70">
+		</div>
+		<div class="col-sm-2">
+			<button type="submit" class="btn btn-primary"><i class="bi-search"></i> Buscar</button>
+		</div>
+	</div>
+}
+
+<table class="table table-success table-striped">
+	<tr>
+		<th>Id</th>
+		<th>Descrição da Tarefa</th>
+		<th>Responsável</th>
+		<th>Status</th>
+		<th>Prioridade</th>
+		<th>Data de Vencimento</th>
+		<th>Ação</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td class="text-left">@item.Id</td>
+			<td class="text-left">@item.Descricao</td>
+			<td>@item.Responsavel</td>
+			<td>@item.Status</td>
+			<td>@item.Prioridade</td>
+			<td>@item.DataVencimento</td>
+			<td>
+				<a href="/Tarefas/Visualizar/@item.Id" title="Visualizar" class="text-primary bi-eye h5"></a>
+				<a href="/Tarefas/MostrarAtualizar/@item.Id" title="Alterar" class="text-success bi-pencil h5"></a>
+				<a href="/Tarefas/MostrarExcluir/@item.Id" title="Excluir" class="text-danger bi-trash h5"></a>
+			</td>
+		</tr>
+	}
+</table>
