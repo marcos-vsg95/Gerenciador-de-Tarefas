@@ -1,0 +1,131 @@
+using MongoDB.Bson;
+using MongoDB.Driver;
+using Trabalho_BD.Models;
+
+namespace Trabalho_BD.Context
+{
+    public class TarefasContext
+    {
+        public List<Tarefas> ObterTarefas()
+        {
+            var colletionTarefas = Conn.AbrirColecaoTarefas();
+            var filter = Builders<Tarefas>.Filter.Empty;
+            return colletionTarefas.Find(filter).ToList();
+        }
+
+		public List<Tarefas> ObterTarefas(string texto)
+		{
+			var colletionTarefas = Conn.AbrirColecaoTarefas();
+			var filter = Builders<Tarefas>.Filter.Regex("Responsavel", new MongoDB.Bson.BsonRegularExpression(".*" + texto + ".*", "i"));
+			return colletionTarefas.Find(filter).ToList();
+		}
+
+		public bool Inserir(Tarefas tarefas)
+        {
+            try
+            {
+                var colletionTarefas = Conn.AbrirColecaoTarefas();
+                colletionTarefas.InsertOne(tarefas);
+                return true;
+			}
+            catch
+            {
+                return false;
+            }
+        }
+
+		public Tarefas ObterTarefa(string id)
+		{
+			var colletionTarefas = Conn.AbrirColecaoTarefas();
+			var filter = Builders<Tarefas>.Filter.Eq(x => x.Id, id);
+			return colletionTarefas.Find(filter).FirstOrDefault();
+		}
+
+		public bool Atualizar(Tarefas tarefas)
+		{
+			try
+			{
+				var colletionTarefas = Conn.AbrirColecaoTarefas();
+				var filter = Builders<Tarefas>.Filter.Eq(x => x.Id, tarefas.Id);
+				colletionTarefas.ReplaceOne(filter, tarefas);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		public bool Excluir(Tarefas tarefas)
+		{
+			try
+			{
+				var colletionTarefas = Conn.AbrirColecaoTarefas();
+				colletionTarefas.DeleteOne(p => p.Id == tarefas.Id);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+
+
+
+
+		public List<BsonDocument> TarefasConcluidasPorUsuario()
+		{
+			var collection = Conn.AbrirColecaoTarefas();
+			var pipeline = new BsonDocument[]
+			{
+		new BsonDocument("$match", new BsonDocument("Status", "Concluída")),
+		new BsonDocument("$group", new BsonDocument
+		{
+			{ "_id", "$Responsavel" },
+			{ "totalConcluidas", new BsonDocument("$sum", 1) }
+		})
+			};
+			return collection.Aggregate<BsonDocument>(pipeline).ToList();
+		}
+
+		public List<BsonDocument> PercentualConclusaoPorUsuario()
+		{
+			var collection = Conn.AbrirColecaoTarefas();
+			var pipeline = new BsonDocument[]
+			{
+		new BsonDocument("$group", new BsonDocument
+		{
+			{ "_id", "$Responsavel" },
+			{ "total", new BsonDocument("$sum", 1) },
+			{ "concluidas", new BsonDocument("$sum", new BsonDocument("$cond", new BsonArray {
+				new BsonDocument("$eq", new BsonArray { "$Status", "Concluída" }), 1, 0
+			})) }
+		}),
+		new BsonDocument("$project", new BsonDocument
+		{
+			{ "percentualConcluido", new BsonDocument("$multiply", new BsonArray {
+				new BsonDocument("$divide", new BsonArray { "$concluidas", "$total" }), 100
+			})}
+		})
+			};
+			return collection.Aggregate<BsonDocument>(pipeline).ToList();
+		}
+
+		public List<BsonDocument> TarefasPendentesPorPrioridade()
+		{
+			var collection = Conn.AbrirColecaoTarefas();
+			var pipeline = new BsonDocument[]
+			{
+		new BsonDocument("$match", new BsonDocument("Status", "Pendente")),
+		new BsonDocument("$group", new BsonDocument
+		{
+			{ "_id", "$Prioridade" },
+			{ "totalPendentes", new BsonDocument("$sum", 1) }
+		})
+			};
+			return collection.Aggregate<BsonDocument>(pipeline).ToList();
+		}
+
+	}
+}
