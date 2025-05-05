@@ -1,0 +1,20 @@
+@model List<MongoDB.Bson.BsonDocument>
+<h2>Tarefas</h2>
+<h3 class="badge bg-secondary">Relatório - Tarefas Concluídas por Usuário</h3>
+
+@foreach (var item in Model)
+{
+    <div class="row col-md-offset-3 mt-2">
+        <label class="col-sm-2 col-form-label text-right">Responsável</label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" value="@item["_id"]" readonly />
+        </div>
+    </div>
+    <div class="row col-md-offset-3 mt-2">
+        <label class="col-sm-2 col-form-label text-right">Total Concluídas</label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" value="@item["totalConcluidas"]" readonly />
+        </div>
+    </div>
+    <hr />
+}
